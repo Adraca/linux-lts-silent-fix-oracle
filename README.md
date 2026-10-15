@@ -4,7 +4,7 @@ Security-relevant bug fixes merged into the upstream Linux kernel mainline frequ
 
 Today, `fixtriage` provides the foundational triage and evaluation pipeline to systematically detect these gaps. By ingesting commit histories across mainline and LTS branches, the tool extracts trailer metadata (such as `Fixes:`), filters out explicitly tagged commits, and scores unflagged fixes using a transparent, weighted keyword and trailer baseline that measures detection precision and recall against historical backport ground truth.
 
-Supported by the NLnet Foundation, this project is evolving `fixtriage` into a continuous open-data oracle for software supply chain transparency. The expanded oracle integrates semantic patch analysis to out-evaluate keyword heuristics, continuously tracks active LTS release heads, and emits standards-compliant vulnerability metadata—translating Linux kernel Package URLs (PURLs) into actionable Open Source Vulnerability (OSV) records and OpenVEX impact declarations.
+This project is the subject of an application to the NLnet Foundation (CodeSupply, round closing 3 November 2026). The project is evolving `fixtriage` into a continuous open-data oracle for software supply chain transparency. The expanded oracle integrates semantic patch analysis to out-evaluate keyword heuristics, continuously tracks active LTS release heads, and emits standards-compliant vulnerability metadata—translating Linux kernel Package URLs (PURLs) into actionable Open Source Vulnerability (OSV) records and OpenVEX impact declarations.
 
 ## Quickstart
 

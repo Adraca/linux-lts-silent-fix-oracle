@@ -1,6 +1,6 @@
 # Project Roadmap: Linux LTS Silent Fix Oracle
 
-This roadmap outlines the milestones and deliverables supported by the NLnet Foundation for developing an automated, open-data oracle that identifies unflagged Linux LTS kernel backport gaps and emits standards-compliant advisory statements (PURL in, OSV/OpenVEX out).
+This roadmap outlines the milestones and deliverables proposed under an application to the NLnet Foundation (CodeSupply, round closing 3 November 2026) for developing an automated, open-data oracle that identifies unflagged Linux LTS kernel backport gaps and emits standards-compliant advisory statements (PURL in, OSV/OpenVEX out).
 
 ---
 
