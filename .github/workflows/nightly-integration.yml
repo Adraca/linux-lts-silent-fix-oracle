@@ -1,0 +1,49 @@
+name: Nightly Integration Tests
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          pip install -e .
+
+      - name: Cache shallow kernel checkouts
+        id: kernel-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/fixtriage/kernel-trees
+          key: kernel-shallow-trees-v3
+
+      - name: Provision shallow kernel checkouts
+        if: steps.kernel-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.cache/fixtriage/kernel-trees
+          git clone --depth=5000 https://github.com/torvalds/linux.git ~/.cache/fixtriage/kernel-trees/mainline || true
+          git clone --depth=5000 --branch linux-6.1.y --single-branch https://github.com/gregkh/linux-stable.git ~/.cache/fixtriage/kernel-trees/stable-6.1.y || true
+
+      - name: Run integration tests
+        run: |
+          if [ -d "$HOME/.cache/fixtriage/kernel-trees/mainline" ] && [ -d "$HOME/.cache/fixtriage/kernel-trees/stable-6.1.y" ]; then
+            KERNEL_MAINLINE="$HOME/.cache/fixtriage/kernel-trees/mainline" \
+            KERNEL_STABLE="$HOME/.cache/fixtriage/kernel-trees/stable-6.1.y" \
+            pytest tests/test_integration.py -v
+          else
+            echo "External kernel trees unavailable, running test_integration with skipif gating"
+            pytest tests/test_integration.py -v
+          fi
