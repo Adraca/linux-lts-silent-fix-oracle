@@ -28,6 +28,27 @@ jobs:
           pip install pytest
           pip install -e .
 
+      - name: Cache shallow kernel checkouts
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        id: kernel-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/fixtriage/kernel-trees
+          key: kernel-shallow-trees-v1
+
+      - name: Provision shallow kernel checkouts (on push to main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.kernel-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.cache/fixtriage/kernel-trees
+          git clone --depth=20000 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ~/.cache/fixtriage/kernel-trees/mainline
+          git clone --depth=20000 --branch linux-6.1.y --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git ~/.cache/fixtriage/kernel-trees/stable-6.1.y
+
       - name: Run test suite
         run: |
-          pytest
+          if [ -d "$HOME/.cache/fixtriage/kernel-trees/mainline" ]; then
+            KERNEL_MAINLINE="$HOME/.cache/fixtriage/kernel-trees/mainline" \
+            KERNEL_STABLE="$HOME/.cache/fixtriage/kernel-trees/stable-6.1.y" \
+            pytest -v
+          else
+            pytest -v
+          fi

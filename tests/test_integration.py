@@ -13,12 +13,12 @@ from fixtriage import ingest
 from fixtriage.classify import find_candidates
 from fixtriage.evaluate import evaluate
 
-MAINLINE = os.environ.get("KERNEL_MAINLINE")
-STABLE = os.environ.get("KERNEL_STABLE")
+MAINLINE = os.environ.get("KERNEL_MAINLINE") or os.environ.get("FIXTRIAGE_KERNEL_REPO")
+STABLE = os.environ.get("KERNEL_STABLE") or os.environ.get("FIXTRIAGE_KERNEL_REPO")
 
 pytestmark = pytest.mark.skipif(
     not (MAINLINE and STABLE),
-    reason="KERNEL_MAINLINE and KERNEL_STABLE not set -- point them at real clones to run this",
+    reason="KERNEL_MAINLINE/KERNEL_STABLE or FIXTRIAGE_KERNEL_REPO not set (see tests/README.md)",
 )
 
 
